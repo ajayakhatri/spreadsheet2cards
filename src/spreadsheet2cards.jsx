@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TableProcessor from "./ProcessData";
+import Simple from "./CardDecks";
+import { Gridnav } from "./Gridnav";
+
 
 const Cards = () => {
   const [showTable, setShowTable] = useState(true)
@@ -7,91 +10,8 @@ const Cards = () => {
   const [showInfo, setShowInfo] = useState(false)
   const [currentNo, setCurrentNo] = useState(0)
   const [wordsData, setWordsData] = useState([]);
-
-  var Gridnav = function (listelement,setCurrentNo) {
-    /*
-  Gridnav - a way to navigate lists with a keyboard in a
-  2D fashion instea of item-by-item
-  Copyright (c) 2016 Christian Heilmann
-  Licensed under the MIT license:
-  http://www.opensource.org/licenses/mit-license.php
-  Version:  1.0.0
-*/
-    var that = this;
-    this.list =
-      typeof listelement === "string"
-        ? document.querySelector(listelement)
-        : listelement;
-    if (!this.list) {
-      throw Error("List item could not be found");
-    }
-    this.setcodes = function (amount) {
-      that.codes = {
-        39: 1,
-        // 68: 1,
-        // 65: -1,
-        37: -1,
-        // 87: -that.amount,
-        38: -that.amount,
-        // 83: that.amount,
-        40: that.amount,
-      };
-    };
-    if (!this.list.getAttribute("data-element")) {
-      this.element = this.list.firstElementChild.firstElementChild.tagName;
-    } else {
-      this.element = this.list.getAttribute("data-element").toUpperCase();
-    }
-    if (!this.list.getAttribute("data-amount")) {
-      this.amount = 6502;
-      this.setcodes(this.amount);
-    } else {
-      this.amount = +this.list.getAttribute("data-amount");
-      this.setcodes(this.amount);
-    }
-    this.setcodes(this.amount);
-    this.all = this.list.querySelectorAll(this.element);
-    this.keynav = function (ev) {
-      var t = ev.target;
-      var c;
-      var posx, posy;
-      if (t.tagName === that.element) {
-        for (var i = 0; i < that.all.length; i++) {
-          if (that.all[i] === t) {
-            c = i;
-            posx = that.all[c].offsetLeft;
-            posy = that.all[c].offsetTop;
-            break;
-          }
-        }
-        if (that.codes[ev.keyCode]) {
-          var kc = that.codes[ev.keyCode];
-          if (kc > -6502 && kc < 6502) {
-            if (that.all[c + kc]) {
-              that.all[c + kc].focus();
-              setCurrentNo(c + kc)
-              setShowAns(false)
-            }
-          } else {
-            var add = kc < 0 ? -1 : 1;
-            while (that.all[i]) {
-              if (
-                that.all[i].offsetLeft === posx &&
-                that.all[i].offsetTop !== posy
-              ) {
-                that.all[i].focus();
-                setCurrentNo(i)
-                setShowAns(false) 
-                break;
-              }
-              i += add;
-            }
-          }
-        }
-      }
-    };
-    this.list.addEventListener("keyup", this.keynav);
-  };
+  const [showDeck, setShowDeck] = useState(true)
+  
 
  // Function to shuffle the array using Fisher-Yates algorithm
 const shuffleArray = (array) => {
@@ -114,11 +34,11 @@ const shuffleWords = () =>{
 
 
   useEffect(() => {
-    if(wordsData.length!=0){
+    if(wordsData.length!=0 && !showDeck){
       var datalist = new Gridnav('#datalist',setCurrentNo)
 
       const handleKeyDown = (event) => {
-        const wordDiv=document.getElementById(`word-${wordsData[currentNo].number}`)
+        const wordDiv=(typeof document !== "undefined" && document.getElementById(`word-${wordsData[currentNo].number}`))
     
         switch (event.key) {
           case ' ':
@@ -137,52 +57,97 @@ const shuffleWords = () =>{
             return;
         }
       };
-
-      document.addEventListener('keydown', handleKeyDown);
-
+      if(typeof document !== "undefined"){
+        document.addEventListener('keydown', handleKeyDown);
+      }
+      
       return () => {
+        if(typeof document !== "undefined"){
         document.removeEventListener('keydown', handleKeyDown);
-      };    
+      }
+      };     
     }
-  }, [wordsData,currentNo,showAns]);
+  }, [wordsData,currentNo,showAns,showDeck]);
 
 
-  
+
 
  const Header = () => {
    return (
     <div className="hero__subtitle" style={{textAlign:"center", marginTop:"10px"}}>
-    <h2 style={{fontSize:"30px",lineHeight:"30px", margin:"0px"}} >
+    <h2 style={{fontSize:"25px",lineHeight:"30px", margin:"0px"}} >
     SpreadSheet2Cards 
     </h2>
-    <small style={{fontSize:"13px"}}>
+    <small style={{fontSize:"10px"}}>
     Convert spreadsheet table into flash cards 
     </small>
     </div>
    )
  }
 
-
+const [showMenu, setShowMenu] = useState(true)
   return (
-  
-<div> 
-<div style={{display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center", color:"white"}}>
+<div id="spreadSheetApp"> 
+<svg onClick={()=>setShowMenu(!showMenu)}
+      stroke="currentColor"
+      fill="none"
+      strokeWidth={0}
+      viewBox="0 0 24 24"
+      className="menubar"
+      height="1em"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        scale: 2,
+        position: "absolute",
+        top: 15,
+        left: 15
+      }}
+    >
+      <path
+        d="M2 5.995c0-.55.446-.995.995-.995h8.01a.995.995 0 010 1.99h-8.01A.995.995 0 012 5.995zM2 12c0-.55.446-.995.995-.995h18.01a.995.995 0 110 1.99H2.995A.995.995 0 012 12zM2.995 17.01a.995.995 0 000 1.99h12.01a.995.995 0 000-1.99H2.995z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+<div style={{display:"flex",flexDirection:"column",justifyContent:"center", alignItems:"center", color:"white", height:showMenu?null:"100vh"}}>
+    <div style={{display:showMenu?"block":"none"}}>
     <Header/>
-    <div>
-    <button onClick={()=>{setShowTable(!showTable)}} style={{minWidth:"80px" }} >{showTable?"Hide table input":"Show table input"}</button>
-    <button onClick={()=>shuffleWords()} style={{minWidth:"80px",margin:"10px" }}>Shuffle</button>
+    <button onClick={()=>{setShowTable(!showTable)}} style={{minWidth:"80px",margin:"5px",backgroundColor:showTable&&"white",color:showTable&&"black" }} >{showTable?"Hide input":"Show input"}</button>
+    <button onClick={()=>shuffleWords()} style={{minWidth:"80px",margin:"5px" }}>Shuffle</button>
     <button onClick={()=>{
-      for(let i=0;i<wordsData.length;i++){
-        console.log(i+1)
-        var a=document.getElementById(`word-${i+1}`)
-        a.style.backgroundColor = "";
-      }
-    }} style={{minWidth:"80px" }}>Reset</button>
-    <button onClick={()=>setShowInfo(!showInfo)} style={{minWidth:"80px",margin:"10px" }}>{showInfo?"Hide Info":"How to use the app?"}</button>
+   for(let i=0;i<wordsData.length;i++){
+    console.log(i+1)
+    if(typeof document !== "undefined"){
+      var a=document.getElementById(`word-${i+1}`)
+      a.style.backgroundColor = "";
+    }
+  }
+    }} 
+    style={{display:showDeck&&"none",minWidth:"80px",margin:"5px" }}>Reset</button>
+    <button onClick={()=>setShowInfo(!showInfo)} style={{minWidth:"80px",margin:"5px",backgroundColor:showInfo&&"white",color:showInfo&&"black"  }}>{showInfo?"Hide Info":"How to use?"}</button>
+    <button onClick={()=>{setShowDeck(!showDeck)}} style={{minWidth:"80px",margin:"5px" }} >{showDeck?"Switch to KeyBoard":"Switch to FlashCard"}</button>
     </div>
-   
+
     <div style={{fontSize:"14px",display:showInfo?"block":"none", border:"white 1px solid", padding:"10px",width:"400px", marginBottom:"10px"}}>
-<strong>How to use it?</strong>
+<h2>How to use it?</h2>
+<p>There are two modes:</p>
+<ul>
+  <li>FlashCard Mode (default)</li>
+  <li>KeyBoard Mode</li>
+</ul>
+<h3>Instruction for FlashCard Mode</h3>
+<ul>
+  <li>Swipe left or click left button if you don't know the meaning.</li>
+  <li>Swipe right or click right button if you know the meaning.</li>
+  <li>Click on the word to toggle visibility of answer for each cards.</li>
+  <li>Click on the <strong>Ans</strong> to toggle visibility of all answers.</li>
+   <li>
+   <strong>Shuffle</strong> button shuffles the words
+   </li>
+</ul>
+<h3>Instruction for KeyBoard Mode</h3>
+Click on "Switch to KeyBoard" button to open KeyBoard Mode.
 <ul>
     <li>
     <strong>Click on any word</strong>  in the grid to start navigation.
@@ -223,23 +188,28 @@ const shuffleWords = () =>{
 
     </div>
     <div style={{display:showTable?"block":"none", border:"white 1px solid", padding:"10px",maxWidth:"400px"}}>
-    <TableProcessor  wordsData={wordsData} setWordsData={setWordsData}/>
+    <TableProcessor  setShowTable={setShowTable} setWordsData={setWordsData}/>
     </div>
   
-
-  {wordsData.length!=0&&
+<div>
+  {wordsData.length!=0&&!showDeck&&
    <ul id="datalist" data-amount="6" data-element="button" style={{display:"grid", gridTemplateColumns:"auto auto auto auto auto auto", gap:"10px",marginTop:"15px"}}>
      {wordsData.map((item) => (
-        <li key={item.number} style={{listStyle:"none"}}>
+       <li key={item.number} style={{listStyle:"none"}}>
           <button id={`word-${item.number}`} style={{minWidth:"150px",minHeight:"40px"}}>{item.word}</button>
         </li>
       ))
-      } 
+    } 
     </ul>
 }
+</div>
+{
+  showDeck&&wordsData.length!=0&&
+      <Simple wordsData={wordsData}/>
+  }
 
 {
-  showAns&&
+  showAns&&!showDeck&&
   <div className="centered-div" style={{border:"white 1px solid", padding:"10px", background:"#222222", minHeight:"200px", minWidth:"200px", borderRadius:"10px"}}>
         <div style={{fontSize:"20px", minHeight:"50px"}}><strong>{toTitleCase(wordsData[currentNo].word)}</strong></div>
         <div>{wordsData[currentNo].meaning}</div>
@@ -248,11 +218,11 @@ const shuffleWords = () =>{
 </div>
 </div>
     )
-}
-
+  }
+  
 export default Cards
 
-function toTitleCase(str) {
+export function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
     function(txt) {

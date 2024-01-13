@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const TableProcessor = ({ wordsData,setWordsData}) => {
+const TableProcessor = ({ setWordsData,setShowTable}) => {
   const [tableBody, setOutputTable] = useState(null);
   const [tableData, setTableData] = useState('');
   const [dataJson, setDataJson] = useState([]);
@@ -63,7 +63,9 @@ const TableProcessor = ({ wordsData,setWordsData}) => {
         ></textarea>
         <div>
 
-      <button  style={{width:"150px", margin:"5px"}}  onClick={processTable}>Process Table</button>
+      <button  style={{width:"150px", margin:"5px"}}  onClick={()=>{
+        processTable(),
+        setShowTable(false)}}>Process Table</button>
       <CopyButton textToCopy={JSON.stringify(dataJson, null, 2)}/>
       </div>
       <div  style={{overflowY:"scroll", height:"200px",overflow:"scroll"}}>
@@ -88,7 +90,7 @@ export default TableProcessor;
 
 
 function CopyButton({textToCopy}) {
-  console.log(textToCopy)
+  // console.log(textToCopy)
   const [isCopied, setIsCopied] = useState(false);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(textToCopy)
