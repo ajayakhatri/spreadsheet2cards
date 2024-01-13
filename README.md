@@ -6,6 +6,8 @@ Converts spreadsheet table into flash cards.
 
 ## Preview
 
+Demo: [ajayakhatri.com.np/spreadsheet2cards](https://www.ajayakhatri.com.np/spreadsheet2cards/)
+
 <table>
 <tr>
 <th>
