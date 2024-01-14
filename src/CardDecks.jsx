@@ -210,7 +210,7 @@ function CardDecks({ wordsData }) {
           style={{ backgroundColor: !canSwipe && "#c3c4d3" }}
           onClick={() => swipe("left")}
         >
-          Left👍
+          Left👎
         </button>
         <button
           style={{ margin: "10px", backgroundColor: !canGoBack && "#c3c4d3" }}
@@ -228,7 +228,7 @@ function CardDecks({ wordsData }) {
           style={{ backgroundColor: !canSwipe && "#c3c4d3" }}
           onClick={() => swipe("right")}
         >
-          Right👎
+          Right👍
         </button>
       </div>
     </div>
